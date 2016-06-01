@@ -3,7 +3,7 @@ import React from 'react'
 import {
   AppRegistry,
   StyleSheet,
-  TouchableHighlight,
+  SegmentedControlIOS,
   Text,
   View } from 'react-native'
 
@@ -18,10 +18,12 @@ class Henelora extends React.Component {
     this.state = {
       initialPosition : 'unknown',
       lastPosition    : 'unknown',
-      started         : false
+      segmentIndex    : 0,
+      started         : false,
     }
 
-    this.onPushPressed = this.onPushPressed.bind(this)
+    this.onPushPressed    = this.onPushPressed.bind(this)
+    this.onSegmentChanged = this.onSegmentChanged.bind(this)
   }
 
   componentDidMount() {
@@ -69,6 +71,10 @@ class Henelora extends React.Component {
     this.setState({ started: !this.state.started })
   }
 
+  onSegmentChanged(event) {
+    this.setState({segmentIndex: event.nativeEvent.selectedSegmentIndex})
+  }
+
   render() {
     const tempValue     = this.state.temp || '--'
     const btnLabel      = this.state.started ? 'Stop' : 'Start'
@@ -78,32 +84,58 @@ class Henelora extends React.Component {
 
     return (
       <View style={styles.container}>
-        <Text>
-          <Text>Temperature: </Text>
-          {tempValue} F
-        </Text>
+        <View style={styles.optionsContainer}>
+          <SegmentedControlIOS
+            values={['Drone', 'Camera']}
+            selectedIndex={this.state.segmentIndex}
+            onChange={this.onSegmentChanged} />
+        </View>
 
-        <Button containerStyle={[styles.buttonContainer, btnColorStyle]} style={styles.button} onPress={this.onPushPressed}>
-          {btnLabel}
-        </Button>
+        <View style={styles.triggerContainer}>
+          <Text>
+            <Text>Temperature: </Text>
+            {tempValue} F
+          </Text>
+
+          <Button containerStyle={[styles.buttonContainer, btnColorStyle]} style={styles.button} onPress={this.onPushPressed}>
+            {btnLabel}
+          </Button>
+        </View>
       </View>
     )
   }
 }
 
 const styles = StyleSheet.create({
+  optionsContainer: {
+    flex: 1,
+    marginBottom: 15,
+    marginLeft: 15,
+    marginRight: 15,
+    alignItems: 'stretch',
+    backgroundColor: '#F5FCFF',
+  },
+
+  triggerContainer: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center'
+    // backgroundColor: '#F5FCFF',
+  },
+
   container: {
     flex: 1,
     justifyContent: 'center',
-    alignItems: 'center',
-    backgroundColor: '#F5FCFF',
+    alignItems: 'stretch',
+
+    marginTop: 35,
   },
+
   buttonContainer: {
     padding:20,
     width: 200,
     overflow:'hidden',
-    borderRadius:40,
-    backgroundColor:'red'
+    borderRadius:40
   },
   button: {
     fontSize: 20,
