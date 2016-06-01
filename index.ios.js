@@ -3,8 +3,11 @@ import React from 'react'
 import {
   AppRegistry,
   StyleSheet,
+  TouchableHighlight,
   Text,
-  View } from 'react-native';
+  View } from 'react-native'
+
+import Button from 'react-native-button'
 
 const API_KEY = `f93fb24be5ca6fb258e138cb9d8d6406`
 
@@ -14,8 +17,11 @@ class Henelora extends React.Component {
 
     this.state = {
       initialPosition : 'unknown',
-      lastPosition    : 'unknown'
+      lastPosition    : 'unknown',
+      started         : false
     }
+
+    this.onPushPressed = this.onPushPressed.bind(this)
   }
 
   componentDidMount() {
@@ -59,8 +65,16 @@ class Henelora extends React.Component {
     this.watchID && navigator.geolocation.clearWatch(this.watchID)
   }
 
+  onPushPressed() {
+    this.setState({ started: !this.state.started })
+  }
+
   render() {
-    const tempValue = this.state.temp || '--'
+    const tempValue     = this.state.temp || '--'
+    const btnLabel      = this.state.started ? 'Stop' : 'Start'
+    const btnColorStyle = {
+      backgroundColor: this.state.started ? '#b62711' : 'green'
+    }
 
     return (
       <View style={styles.container}>
@@ -68,6 +82,10 @@ class Henelora extends React.Component {
           <Text>Temperature: </Text>
           {tempValue} F
         </Text>
+
+        <Button containerStyle={[styles.buttonContainer, btnColorStyle]} style={styles.button} onPress={this.onPushPressed}>
+          {btnLabel}
+        </Button>
       </View>
     )
   }
@@ -80,9 +98,16 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     backgroundColor: '#F5FCFF',
   },
-  thumbnail: {
-    width: 53,
-    height: 81,
+  buttonContainer: {
+    padding:20,
+    width: 200,
+    overflow:'hidden',
+    borderRadius:40,
+    backgroundColor:'red'
+  },
+  button: {
+    fontSize: 20,
+    color: 'white'
   }
 });
 
