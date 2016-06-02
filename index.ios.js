@@ -4,6 +4,8 @@ import {
   AppRegistry,
   StyleSheet,
   SegmentedControlIOS,
+  PickerIOS,
+  PickerItemIOS,
   Text,
   View } from 'react-native'
 
@@ -20,10 +22,24 @@ class Henelora extends React.Component {
       lastPosition    : 'unknown',
       segmentIndex    : 0,
       started         : false,
+
+      drones          : [
+        { name: 'Drone 1', UUID: '1' },
+        { name: 'Drone 2', UUID: '2' },
+        { name: 'Drone 3', UUID: '3' }
+      ],
+      cameras         : [
+        { name: 'Cam 1', UUID: '1' },
+        { name: 'Cam 2', UUID: '2' },
+      ]
     }
+    this.state.drone  = this.state.drones[0]
+    this.state.camera = this.state.cameras[0]
 
     this.onPushPressed    = this.onPushPressed.bind(this)
     this.onSegmentChanged = this.onSegmentChanged.bind(this)
+    this.onDroneChangd    = this.onDroneChangd.bind(this)
+    this.onCameraChangd   = this.onCameraChangd.bind(this)
   }
 
   componentDidMount() {
@@ -75,12 +91,67 @@ class Henelora extends React.Component {
     this.setState({segmentIndex: event.nativeEvent.selectedSegmentIndex})
   }
 
+  onDroneChangd(drone) {
+    this.setState({drone: drone})
+  }
+
+  onCameraChangd(camera) {
+    this.setState({camera: camera})
+  }
+
+  renderDronePicker() {
+    const drone = this.state.drone || this.state.drones[0]
+
+    return (
+      <PickerIOS
+        selectedValue={drone}
+        onValueChange={this.onDroneChangd}>
+
+        {
+          this.state.drones.map((drone) =>
+            <PickerIOS.Item
+              key={drone.UUID}
+              value={drone}
+              label={drone.name}
+            />
+          )
+        }
+      </PickerIOS>
+    )
+  }
+
+  renderCameraPicker() {
+    const camera = this.state.camera || this.state.cameras[0]
+
+    return (
+      <PickerIOS
+        selectedValue={camera}
+        onValueChange={this.onCameraChangd}>
+
+        {
+          this.state.cameras.map((camera) =>
+            <PickerIOS.Item
+              key={camera.UUID}
+              value={camera}
+              label={camera.name}
+            />
+          )
+        }
+      </PickerIOS>
+    )
+  }
+
   render() {
     const tempValue     = this.state.temp || '--'
     const btnLabel      = this.state.started ? 'Stop' : 'Start'
     const btnColorStyle = {
       backgroundColor: this.state.started ? '#b62711' : 'green'
     }
+
+    const drones     = this.state.drones || []
+    const pickerView = this.state.segmentIndex === 0
+      ? this.renderDronePicker()
+      : this.renderCameraPicker()
 
     return (
       <View style={styles.container}>
@@ -89,6 +160,8 @@ class Henelora extends React.Component {
             values={['Drone', 'Camera']}
             selectedIndex={this.state.segmentIndex}
             onChange={this.onSegmentChanged} />
+
+          {pickerView}
         </View>
 
         <View style={styles.triggerContainer}>
