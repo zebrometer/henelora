@@ -7,9 +7,12 @@
   },
   "dependencies": {
     "react": "15.0.2",
-    "react-native": "^0.26.3"
+    "react-native": "^0.26.3",
+    "react-native-settings-list": "^1.1.4",
+    "react-native-vector-icons": "^2.0.3"
   },
   "devDependencies": {
-    "react-native-button": "^1.6.0"
+    "react-native-button": "^1.6.0",
+    "react-native-custom-action-sheet": "0.0.11"
   }
 }
