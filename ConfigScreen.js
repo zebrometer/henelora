@@ -1,9 +1,9 @@
 
 import { StyleSheet, View, AlertIOS } from 'react-native'
-import React                   from 'react'
+import React                          from 'react'
+
 import SettingsList            from 'react-native-settings-list'
-import DroneList               from './DroneList'
-import CameraList              from './CameraList'
+import InventoryList           from './InventoryList'
 
 export default class ConfigScreen extends React.Component {
   constructor(props) {
@@ -14,19 +14,62 @@ export default class ConfigScreen extends React.Component {
     this.onFrequencyConfig = this.onFrequencyConfig.bind(this)
   }
 
+  loadInventory() {
+    return new Promise((resolve, reject) => {
+      const inventory = {
+        drones: [
+          { name: 'Drone 1', uuid: this.guid() },
+          { name: 'Drone 2', uuid: this.guid() },
+          { name: 'Drone 3', uuid: this.guid() },
+          { name: 'Drone 4', uuid: this.guid() },
+          { name: 'Drone 5', uuid: this.guid() },
+          { name: 'Drone 6', uuid: this.guid() },
+          { name: 'Drone 7', uuid: this.guid() }
+        ],
+        cameras: [
+          { name: 'Camera 1', uuid: this.guid() },
+          { name: 'Camera 2', uuid: this.guid() },
+          { name: 'Camera 3', uuid: this.guid() },
+          { name: 'Camera 4', uuid: this.guid() },
+        ]
+      }
+      resolve(inventory)
+    })
+  }
+
+  loadPropData(propName) {
+    return () => {
+      return new Promise((resoleve, reject) => {
+        if (this.inventory) {
+          resoleve(this.inventory[propName])
+        } else {
+          this.loadInventory().then((inventory) => {
+            this.inventory = inventory
+            resoleve(this.inventory[propName])
+          })
+        }
+      })
+    }
+  }
+
+  guid() {
+    const  s4 = () => Math.floor((1 + Math.random()) * 0x10000).toString(16).substring(1)
+    return s4() + s4() + '-' + s4() + '-' + s4() + '-' + s4() + '-' + s4() + s4() + s4()
+  }
+
   onDroneConfig() {
     this.props.navigator.push({
       title: 'Drones',
-      component: DroneList,
-      passProps: {}
+      component: InventoryList,
+      passProps: { loadData: this.loadPropData('drones')  }
     })
   }
 
   onCameraConfig() {
     this.props.navigator.push({
       title: 'Cameras',
-      component: CameraList,
-      passProps: {}
+      component: InventoryList,
+      passProps: { loadData: this.loadPropData('cameras')  }
     })
   }
 

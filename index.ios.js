@@ -12,7 +12,6 @@ import Button       from 'react-native-button'
 import SettingsList from 'react-native-settings-list'
 
 import ConfigScreen from './ConfigScreen'
-import DroneList    from './DroneList'
 
 
 class Henelora extends React.Component {
