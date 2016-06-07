@@ -1,6 +1,7 @@
 
 import React   from 'react'
 import {
+  TouchableHighlight,
   StyleSheet,
   ListView,
   View,
@@ -24,8 +25,8 @@ export default class InventoryList extends React.Component {
       dataSource: new ListView.DataSource({rowHasChanged: (r1, r2) => r1 !== r2})
     }
 
-    this.renderRow       = this.renderRow.bind(this)
-    this.renderSeparator = this.renderSeparator.bind(this)
+    this.renderRow         = this.renderRow.bind(this)
+    this.renderSeparator   = this.renderSeparator.bind(this)
   }
 
   componentDidMount() {
@@ -37,19 +38,7 @@ export default class InventoryList extends React.Component {
   }
 
   renderRow(drone, sectionID, rowID) {
-    return (
-      <View style={styles.rowStyle}>
-        <View style={{flexDirection: 'row'}}>
-          <View style={{flex: 1}}>
-            <Text>{drone.name}</Text>
-            <Text  style={styles.rowInfoStyle}>{drone.uuid}</Text>
-          </View>
-          <View>
-            <Image style={styles.imageStyle} source={require('./img/info-16.png')} />
-          </View>
-        </View>
-      </View>
-    )
+    return <InventoryListRow drone={drone} />
   }
 
   renderSeparator(sectionID, rowID, adjacentRowHighlighted) {
@@ -78,7 +67,51 @@ export default class InventoryList extends React.Component {
       </View>
     )
   }
+}
 
+class InventoryListRow extends React.Component {
+  constructor(props) {
+    super(props)
+
+    this.state = { active: false }
+
+    this.onRowHideUnderlay = this.onRowHideUnderlay.bind(this)
+    this.onRowUnderlay     = this.onRowUnderlay.bind(this)
+    this.onRowPress        = this.onRowPress.bind(this)
+  }
+
+  onRowHideUnderlay() {
+    this.setState({active: false})
+  }
+
+  onRowUnderlay() {
+    this.setState({active: true})
+  }
+
+  onRowPress() {
+  }
+
+  render() {
+    const drone = this.props.drone
+
+    return (
+      <TouchableHighlight
+        onHideUnderlay={this.onRowHideUnderlay}
+        onUnderlay={this.onRowUnderlay}
+        onPress={this.onRowPress} underlayColor="#EFEFEF">
+
+        <View style={styles.rowStyle}>
+          <View style={{flex: 1}}>
+            <Text>{drone.name}</Text>
+            <Text  style={styles.rowInfoStyle}>{drone.uuid}</Text>
+          </View>
+          <View>
+            <Image style={styles.imageStyle} source={require('./img/info-16.png')} />
+          </View>
+        </View>
+      </TouchableHighlight>
+    )
+  }
 }
 
 const styles = StyleSheet.create({
@@ -92,10 +125,11 @@ const styles = StyleSheet.create({
     paddingTop: 15
   },
   rowStyle: {
-    paddingTop: 15,
-    paddingBottom: 15,
-    paddingLeft: 15,
-    paddingRight: 15
+    flexDirection: 'row',
+    paddingTop: 10,
+    paddingBottom: 10,
+    paddingLeft: 10,
+    paddingRight: 10
   },
   rowInfoStyle: {
     fontSize: 9,

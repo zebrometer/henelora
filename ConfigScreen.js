@@ -33,7 +33,9 @@ export default class ConfigScreen extends React.Component {
           { name: 'Camera 4', uuid: this.guid() },
         ]
       }
-      resolve(inventory)
+      setTimeout(()=> {
+        resolve(inventory)
+      }, 200)
     })
   }
 
